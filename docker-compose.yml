@@ -39,7 +39,7 @@ services:
       MYSQL_USER: root
       MYSQL_PASSWORD: 1234
       MYSQL_HOST: db # Nome do service logo abaixo
-      JWT_SECRET: secretJWT
+      JWT_SECRET: 123456
       API_HOST: 'node'
       API_PORT: 3000
       NODE_ENV: 'development'
@@ -59,7 +59,7 @@ services:
       - 3306:3306
       - 33060:33060
     environment:
-      MYSQL_ROOT_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: 1234
     networks:
       - blogs_api_net
 
