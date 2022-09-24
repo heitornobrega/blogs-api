@@ -9,7 +9,6 @@ const getUser = async ({ email, password }) => {
     attributes: { exclude: 'password' },
   });
   if (result.length === 0) throw Error;
-  // console.log(result);
   return result;
 };
 
@@ -28,4 +27,12 @@ const getAllUsers = async () => {
   );
   return result;
 };
-module.exports = { getUser, createUser, getAllUsers };
+
+const getUserById = async (id) => {
+  const result = await User.findByPk(id, { attributes: { exclude: 'password' } });
+  // console.log(result);
+  if (result === null) throw Error;
+  return result;
+};
+
+module.exports = { getUser, createUser, getAllUsers, getUserById };

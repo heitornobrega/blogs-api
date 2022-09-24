@@ -30,7 +30,6 @@ const getUser = async (req, res, next) => {
   try {
     const user = req.body;
     const result = await userServices.getUser(user);
-    console.log(result[0]);
     const { id, displayName, email } = result[0];
     const payload = { id, displayName, email };
     const configs = {
@@ -66,8 +65,19 @@ const createUser = async (req, res, next) => {
 
 const getAllUsers = async (_req, res) => {
   const result = await userServices.getAllUsers();
-
   return res.status(200).json(result);
 };
 
-module.exports = { getUser, createUser, getAllUsers };
+const getUserById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const result = await userServices.getUserById(id);
+    return res.status(200).json(result);
+  } catch (e) {
+    e.statusCode = 404;
+    e.message = 'User does not exist';
+    next(e);
+  }
+};
+
+module.exports = { getUser, createUser, getAllUsers, getUserById };
