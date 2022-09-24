@@ -14,12 +14,15 @@ module.exports = {
       },
       email: {
         type: Sequelize.STRING,
+        unique: true,
+        allowNull: false,
       },
       password: {
         type: Sequelize.STRING,
       },
       image: {
         type: Sequelize.STRING,
+        allowNull: true,
       },
     });
   },

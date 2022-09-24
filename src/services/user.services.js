@@ -7,9 +7,15 @@ const getUser = async ({ email, password }) => {
       password,
     },
   });
-  console.log(result);
-  if (result.length === 0) throw Error('user not found');
+  if (result.length === 0) throw Error;
   return result;
 };
 
-module.exports = { getUser };
+const createUser = async ({ displayName, email, password, image }) => {
+  const result = await User.create(
+    { displayName, email, password, image },
+  );
+  return result;
+};
+
+module.exports = { getUser, createUser };
