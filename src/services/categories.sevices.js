@@ -6,4 +6,9 @@ const createCategory = async ({ name }) => {
     return result;
 };
 
-module.exports = { createCategory };
+const getAllCategories = async () => {
+    const result = await Category.findAll({ order: [['id', 'ASC']] });
+    return result;
+};
+
+module.exports = { createCategory, getAllCategories };
