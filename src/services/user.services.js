@@ -6,8 +6,10 @@ const getUser = async ({ email, password }) => {
       email,
       password,
     },
+    attributes: { exclude: 'password' },
   });
   if (result.length === 0) throw Error;
+  // console.log(result);
   return result;
 };
 

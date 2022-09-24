@@ -28,15 +28,15 @@ const getUser = async (req, res, next) => {
   const { error } = validateLoginBody(req.body);
   if (error) return next(error);
   try {
-    const payload = {
-      email: req.body.email,
-    };
+    const user = req.body;
+    const result = await userServices.getUser(user);
+    console.log(result[0]);
+    const { id, displayName, email } = result[0];
+    const payload = { id, displayName, email };
     const configs = {
       expiresIn: '1h',
     };
     const token = jwt.sign(payload, JWT_SECRET, configs);
-    const user = req.body;
-    await userServices.getUser(user);
     return res.status(200).json({ token });
   } catch (e) {
     e.statusCode = 400;
@@ -66,6 +66,7 @@ const createUser = async (req, res, next) => {
 
 const getAllUsers = async (_req, res) => {
   const result = await userServices.getAllUsers();
+
   return res.status(200).json(result);
 };
 
