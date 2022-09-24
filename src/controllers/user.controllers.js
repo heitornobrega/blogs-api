@@ -49,12 +49,13 @@ const createUser = async (req, res, next) => {
   const { error } = validateNewUserBody(req.body);
   if (error) return next(error);
   try {
-    const payload = req.body;
+    const result = await userServices.createUser(req.body);
+    const { id, displayName, email } = result.dataValues;
+    const payload = { id, displayName, email };
     const configs = {
       expiresIn: '1h',
     };
     const token = jwt.sign(payload, JWT_SECRET, configs);
-    await userServices.createUser(req.body);
     return res.status(201).json({ token });
   } catch (e) {
     e.statusCode = 409;
@@ -63,4 +64,9 @@ const createUser = async (req, res, next) => {
   }
 };
 
-module.exports = { getUser, createUser };
+const getAllUsers = async (_req, res) => {
+  const result = await userServices.getAllUsers();
+  return res.status(200).json(result);
+};
+
+module.exports = { getUser, createUser, getAllUsers };
