@@ -13,9 +13,7 @@ module.exports = (err, _req, res, _next) => {
   
     console.error(err);
   
-    return res.status(500).json({
-      error: {
-        message: `Internal server error: ${err.message}`,
-      },
+    return res.status(400).json({
+      message: '"categoryIds" not found',
     });
   };
