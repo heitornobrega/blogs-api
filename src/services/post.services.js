@@ -41,4 +41,23 @@ async function getAllBlogPosts() {
   }
 }
 
-module.exports = { createPost, getAllBlogPosts };
+async function getAllBlogPostsByPk(id) {
+    try {
+        const result = await BlogPost.findByPk(id, {
+        
+        include: [
+          { model: User,
+            as: 'user',
+            attributes: { exclude: 'password' } },
+          { model: Category, as: 'categories', through: { attributes: [] } },
+        ],
+        });
+        if (result === null) throw Error;
+      return result;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
+module.exports = { createPost, getAllBlogPosts, getAllBlogPostsByPk };
