@@ -58,6 +58,17 @@ async function getAllBlogPostsByPk(id) {
       console.log(error);
       throw error;
     }
+}
+  
+const updatePost = async ({ title, content, id }) => {
+  try {
+    const result = await BlogPost.update({ title, content }, { where: { id } });
+    console.log('chegeu');
+    return result;
+  } catch (error) {
+    console.log(error.message);
+    throw error;
   }
+};
 
-module.exports = { createPost, getAllBlogPosts, getAllBlogPostsByPk };
+module.exports = { createPost, getAllBlogPosts, getAllBlogPostsByPk, updatePost };

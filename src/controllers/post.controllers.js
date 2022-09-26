@@ -18,6 +18,18 @@ const validateNewPostBody = (body) =>
     }),
   }).validate(body);
 
+const validatePostToUpdateBody = (body) => 
+  Joi.object({
+    title: Joi.string().required().messages({
+      'any.required': FIELD_NOT_FOUND,
+      'string.empty': FIELD_NOT_FOUND,
+    }),
+    content: Joi.string().required().messages({
+      'any.required': FIELD_NOT_FOUND,
+      'string.empty': FIELD_NOT_FOUND,
+    }),
+  }).validate(body);
+
 const createPost = async (req, res, next) => {
   const { error } = validateNewPostBody(req.body);
   if (error) {
@@ -58,4 +70,25 @@ const getAllBlogPostsByPk = async (req, res, next) => {
   }
 };
 
-module.exports = { createPost, getAllBlogPosts, getAllBlogPostsByPk };
+const updatePost = async (req, res, next) => {
+  const { error } = validatePostToUpdateBody(req.body);
+  if (error) {
+    return next(error);
+  }
+  try {
+    const { id: userId } = req.user;
+    const { id } = req.params;
+    const postToUpadate = await postServices.getAllBlogPostsByPk(id);
+    if (postToUpadate.userId !== userId) throw Error;
+    await postServices.updatePost({ id, ...req.body });
+    const postUpadated = await postServices.getAllBlogPostsByPk(id);
+    return res.status(200).json(postUpadated);
+  } catch (e) {
+    console.log(e);
+    e.statusCode = 401;
+    e.message = 'Unauthorized user';
+    next(e);
+  }
+};
+
+module.exports = { createPost, getAllBlogPosts, getAllBlogPostsByPk, updatePost };
