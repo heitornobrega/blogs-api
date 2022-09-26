@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+const { Op } = require('sequelize');
 const { PostCategory, BlogPost, User, Category } = require('../models');
 const config = require('../config/config');
 
@@ -28,9 +29,7 @@ async function getAllBlogPosts() {
   try {
     const result = await BlogPost.findAll({
       include: [
-        { model: User,
-          as: 'user',
-          attributes: { exclude: 'password' } },
+        { model: User, as: 'user', attributes: { exclude: 'password' } },
         { model: Category, as: 'categories', through: { attributes: [] } },
       ],
     });
@@ -42,24 +41,21 @@ async function getAllBlogPosts() {
 }
 
 async function getAllBlogPostsByPk(id) {
-    try {
-        const result = await BlogPost.findByPk(id, {
-        
-        include: [
-          { model: User,
-            as: 'user',
-            attributes: { exclude: 'password' } },
-          { model: Category, as: 'categories', through: { attributes: [] } },
-        ],
-        });
-        if (result === null) throw Error;
-      return result;
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
+  try {
+    const result = await BlogPost.findByPk(id, {
+      include: [
+        { model: User, as: 'user', attributes: { exclude: 'password' } },
+        { model: Category, as: 'categories', through: { attributes: [] } },
+      ],
+    });
+    if (result === null) throw Error;
+    return result;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 }
-  
+
 const updatePost = async ({ title, content, id }) => {
   try {
     const result = await BlogPost.update({ title, content }, { where: { id } });
@@ -80,4 +76,27 @@ const deletePost = async (id) => {
   }
 };
 
-module.exports = { createPost, getAllBlogPosts, getAllBlogPostsByPk, updatePost, deletePost };
+const getPostByText = async (text) => {
+  const [result] = await BlogPost.findAll({
+    where: {
+      [Op.or]: [
+        { title: { [Op.like]: `%${text}%` } },
+        { content: { [Op.like]: `%${text}%` } },
+      ],
+    },
+    include: [
+      { model: User, as: 'user', attributes: { exclude: 'password' } },
+      { model: Category, as: 'categories', through: { attributes: [] } },
+    ],
+  });
+  return result;
+};
+
+module.exports = {
+  createPost,
+  getAllBlogPosts,
+  getAllBlogPostsByPk,
+  updatePost,
+  deletePost,
+  getPostByText,
+};

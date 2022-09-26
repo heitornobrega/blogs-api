@@ -5,6 +5,7 @@ const auth = require('../middlewares/auth');
 
 const router = express.Router();
 
+router.get('/search?', auth, postControllers.getPostByText);
 router.post('/', auth, postControllers.createPost);
 router.get('/', auth, postControllers.getAllBlogPosts);
 router.get('/:id', auth, postControllers.getAllBlogPostsByPk);

@@ -18,7 +18,7 @@ const validateNewPostBody = (body) =>
     }),
   }).validate(body);
 
-const validatePostToUpdateBody = (body) => 
+const validatePostToUpdateBody = (body) =>
   Joi.object({
     title: Joi.string().required().messages({
       'any.required': FIELD_NOT_FOUND,
@@ -102,7 +102,7 @@ const deletePost = async (req, res, next) => {
   }
   try {
     const postToDelete = await postServices.getAllBlogPostsByPk(req.params.id);
-    if (postToDelete.userId !== userId) throw Error; 
+    if (postToDelete.userId !== userId) throw Error;
     await postServices.deletePost(req.params.id);
     return res.send(204);
   } catch (error) {
@@ -112,4 +112,23 @@ const deletePost = async (req, res, next) => {
   }
 };
 
-module.exports = { createPost, getAllBlogPosts, getAllBlogPostsByPk, updatePost, deletePost };
+const getPostByText = async (req, res) => {
+  if (!req.query.q) {
+    const result = await postServices.getAllBlogPosts();
+    return res.status(200).json(result);
+  }
+  const result = await postServices.getPostByText(req.query.q);
+  if (!result) {
+    return res.status(200).json([]);
+  }
+  return res.status(200).json([result]);
+};
+
+module.exports = {
+  createPost,
+  getAllBlogPosts,
+  getAllBlogPostsByPk,
+  updatePost,
+  deletePost,
+  getPostByText,
+};
