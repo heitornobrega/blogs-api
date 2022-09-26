@@ -29,7 +29,8 @@ const createPost = async (req, res, next) => {
     const result = await postServices.createPost({ userId, ...req.body });
     return res.status(201).json(result);
   } catch (e) {
-    console.log(e);
+    e.statusCode = 400;
+    e.message = '"categoryIds" not found';
     next(e);
   }
 };
@@ -39,7 +40,8 @@ const getAllBlogPosts = async (_req, res, next) => {
     const result = await postServices.getAllBlogPosts();
     return res.status(200).json(result);
   } catch (error) {
-    console.log(error);
+    // error.statusCode = 400;
+    // error.message = '"categoryIds" not found';
     next(error);
   }
 };
