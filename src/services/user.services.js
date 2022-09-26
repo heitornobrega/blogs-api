@@ -35,4 +35,13 @@ const getUserById = async (id) => {
   return result;
 };
 
-module.exports = { getUser, createUser, getAllUsers, getUserById };
+const deleteUser = async (id) => {
+  try {
+    await User.destroy({ where: { id } });
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+module.exports = { getUser, createUser, getAllUsers, getUserById, deleteUser };

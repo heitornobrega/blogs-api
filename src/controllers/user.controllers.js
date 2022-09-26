@@ -80,4 +80,14 @@ const getUserById = async (req, res, next) => {
   }
 };
 
-module.exports = { getUser, createUser, getAllUsers, getUserById };
+const deleteUser = async (req, res, next) => {
+  try {
+    const { id } = req.user;
+    await userServices.deleteUser(id);
+    return res.send(204);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { getUser, createUser, getAllUsers, getUserById, deleteUser };
