@@ -91,4 +91,25 @@ const updatePost = async (req, res, next) => {
   }
 };
 
-module.exports = { createPost, getAllBlogPosts, getAllBlogPostsByPk, updatePost };
+const deletePost = async (req, res, next) => {
+  const { id: userId } = req.user;
+  try {
+    await postServices.getAllBlogPostsByPk(req.params.id);
+  } catch (error) {
+    error.statusCode = 404;
+    error.message = 'Post does not exist';
+    return next(error);
+  }
+  try {
+    const postToDelete = await postServices.getAllBlogPostsByPk(req.params.id);
+    if (postToDelete.userId !== userId) throw Error; 
+    await postServices.deletePost(req.params.id);
+    return res.send(204);
+  } catch (error) {
+    error.statusCode = 401;
+    error.message = 'Unauthorized user';
+    return next(error);
+  }
+};
+
+module.exports = { createPost, getAllBlogPosts, getAllBlogPostsByPk, updatePost, deletePost };

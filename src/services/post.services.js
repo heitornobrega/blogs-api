@@ -63,12 +63,21 @@ async function getAllBlogPostsByPk(id) {
 const updatePost = async ({ title, content, id }) => {
   try {
     const result = await BlogPost.update({ title, content }, { where: { id } });
-    console.log('chegeu');
     return result;
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
     throw error;
   }
 };
 
-module.exports = { createPost, getAllBlogPosts, getAllBlogPostsByPk, updatePost };
+const deletePost = async (id) => {
+  try {
+    const result = await BlogPost.destroy({ where: { id } });
+    return result;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+module.exports = { createPost, getAllBlogPosts, getAllBlogPostsByPk, updatePost, deletePost };
