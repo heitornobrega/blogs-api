@@ -6,5 +6,6 @@ const auth = require('../middlewares/auth');
 const router = express.Router();
 
 router.post('/', auth, postControllers.createPost);
+router.get('/', auth, postControllers.getAllBlogPosts);
 
 module.exports = router;

@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const { postsCategory, BlogPost } = require('../models');
+const { PostCategory, BlogPost, User } = require('../models');
 const config = require('../config/config');
 
 const env = process.env.NODE_ENV || 'development';
@@ -11,7 +11,7 @@ const createPost = async ({ userId, title, content, categoryIds }) => {
             const blogPost = await BlogPost.create({ title, content, userId }, { transaction: t });
             const postId = blogPost.id;
             const info = categoryIds.map((categoryId) => ({ postId, categoryId }));
-            await postsCategory.bulkCreate(info, { transaction: t });
+            await PostCategory.bulkCreate(info, { transaction: t });
             return blogPost.dataValues;  
         });
         return result;
@@ -21,4 +21,17 @@ const createPost = async ({ userId, title, content, categoryIds }) => {
     }
 };
 
-module.exports = { createPost };
+const getAllBlogPosts = async () => {
+    try {
+        const result = await BlogPost.findAll({
+            include: [{ model: PostCategory }, { model: User }],
+        });
+        console.log('teste', result);
+        return result;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+};
+
+module.exports = { createPost, getAllBlogPosts };
